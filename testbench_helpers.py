@@ -1,9 +1,22 @@
 import configparser as conf
 import os
 import sys
-
+import threading as th
+import subprocess as sp
+import multiprocessing as mp
 #-----------------------------------------
 # helper classes for testbench.
+
+#--------------------------------------------------------------
+#job handler
+class tb_capsule:
+    def __init__(self, settings_dict, inputs_dict, tools_dict):
+
+        self.settings_dict = settings_dict
+        self.inputs_dict = inputs_dict
+        self.tools_dict = tools_dict
+
+
 
 
 #---------------------------------------------------------------
@@ -26,7 +39,16 @@ class tb_config:
         if("inputs" in self.config_read):
             
             input_config = self.config_read["inputs"]
-            
+            input_list = sorted(input_config.keys())
+            for item in input_list:
+                self.inputs_dict[item] = input_config[item]
+
+        #expecting toolpaths to be tagged with their names
+        if("tools" in self.config_read):
+            tools_config = self.config_read["tools"] 
+            tool_list = sorted(tools_config.keys())
+            for item in tool_list:
+                self.tools_dict[item] = str(tools_config[item])
     
 
     def get_settings_dict(self):
